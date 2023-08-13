@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mandelbrot Set</title>
+</head>
+<body>
+    <div>
+        <div>
+
+            <button onclick="zoomfunct()">zoom</button>
+            <label for="" id="zoomstr"></label>
+            <button onclick="downfunct()">down</button>
+            <button onclick="upfunct()">up</button>
+            <button onclick="leftfunct()">left</button>
+            <button onclick="rightfunct()">right</button>
+        </div>
+        <div>
+            <canvas id="gardun" width="1000" height="1000"></canvas>
+
+        </div>
+    </div>
+    <script>
+        
+        let x_speed_rate = 0.5;
+        let x_location = 1;
+        let y_speed_rate = 0.5;
+        let y_location = 1;
+        let zoom_rate = 2;
+        let zoom = 1;
+        const zoomstr = document.getElementById("zoomstr");
+        canvas = document.getElementById("gardun");
+        m = canvas.getContext("2d");
+        atom = function(x,y,c) {
+            m.fillStyle = c;
+            m.fillRect(x,y,3,3)
+        }
+        zoomfunct = ()=>{
+            zoom*=(zoom_rate); 
+            update();
+        }
+        downfunct = ()=>{
+            y_location-=y_speed_rate*(2/zoom); 
+            update();
+        }
+        upfunct = ()=>{
+            y_location+=y_speed_rate*(2/zoom); 
+            update();
+        }
+        leftfunct = ()=>{
+            x_location+=x_speed_rate*(2/zoom); 
+            update();
+        }
+        rightfunct = ()=>{
+            x_location-=x_speed_rate*(2/zoom); 
+            update();
+        }
+
+        update = ()=>{
+            clear();
+            display();
+        }
+        
+        clear = ()=>{
+            
+            m.clearRect(0, 0, canvas.width, canvas.height)
+        }
+        display = ()=>{
+            for (let y = 1; y < 1000; y++){
+                for (let x = 1; x < 1000; x++) {
+                    // atom(x,y,`red`)
+                    let dx = ((x-(500*x_location)))/(200*zoom);
+                    let dy = ((y-(500*y_location)))/(200*zoom);
+                    let a = dx;
+                    let b = dy;
+                    for (let t = 1; t < 200; t++) {
+                        let d = (a*a)-(b*b)+dx;
+                        b = 2*(a*b) + dy;
+                        a = d;
+                        const H = d > 200;
+                        
+                        if(H) {
+                            atom(x,y,`rgb(${t*3},${t},${t*0.5})`)
+                            break;
+                        }
+                    }
+                }
+            }
+            atom(canvas.width/2,canvas.height/2,`magenta`)
+            zoomstr.innerText = zoom;
+        }
+        window.addEventListener('load', display);
+        window.addEventListener('onscroll',()=>{console.log("scolr")})
+    </script>
+</body>
+</html>
